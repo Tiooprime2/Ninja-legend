@@ -231,7 +231,7 @@ contentArea.Size = UDim2.new(1, -24, 1, -72)
 contentArea.Position = UDim2.new(0, 12, 0, 62)
 contentArea.BackgroundTransparency = 1
 contentArea.BorderSizePixel = 0
-contentArea.ClipsDescendants = true
+contentArea.ClipsDescendants = false
 contentArea.Parent = mainFrame
 
 local scroll = Instance.new("ScrollingFrame")
@@ -243,6 +243,7 @@ scroll.ScrollBarThickness = 4
 scroll.ScrollBarImageColor3 = THEME.ACCENT
 scroll.ScrollBarImageTransparency = 0.3
 scroll.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+scroll.ClipsDescendants = false
 scroll.Parent = contentArea
 
 -- Grid layout 2 kolom
