@@ -3,14 +3,13 @@
 -- ║     Theme + Utility + Window + Scroll    ║
 -- ╚══════════════════════════════════════════╝
 
-local TweenService      = game:GetService("TweenService")
-local UserInputService  = game:GetService("UserInputService")
-local Players           = game:GetService("Players")
+local TweenService     = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local Players          = game:GetService("Players")
 
 local player = Players.LocalPlayer
 local pGui   = player:WaitForChild("PlayerGui")
 
--- Hapus GUI lama kalau ada
 if pGui:FindFirstChild("TiooBetaV1") then
     pGui.TiooBetaV1:Destroy()
 end
@@ -36,10 +35,8 @@ local THEME = {
 }
 
 -- ═══════════════════════════════════════════
--- UTILITY FUNCTIONS
+-- UTILITY
 -- ═══════════════════════════════════════════
-
--- Rounded corner
 local function corner(obj, r)
     local c = Instance.new("UICorner")
     c.CornerRadius = UDim.new(0, r or 8)
@@ -47,7 +44,6 @@ local function corner(obj, r)
     return c
 end
 
--- Border stroke
 local function stroke(obj, color, thickness, transparency)
     local s = Instance.new("UIStroke")
     s.Color = color or THEME.BORDER
@@ -57,7 +53,6 @@ local function stroke(obj, color, thickness, transparency)
     return s
 end
 
--- Gradient fill
 local function gradient(obj, c0, c1, rotation)
     local g = Instance.new("UIGradient")
     g.Color = ColorSequence.new(c0, c1)
@@ -66,7 +61,6 @@ local function gradient(obj, c0, c1, rotation)
     return g
 end
 
--- Smooth tween
 local function tween(obj, t, props)
     TweenService:Create(
         obj,
@@ -75,7 +69,6 @@ local function tween(obj, t, props)
     ):Play()
 end
 
--- Draggable handler
 local function makeDraggable(frame, handle)
     handle = handle or frame
     local dragging, dragStart, startPos
@@ -118,12 +111,12 @@ mainGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 mainGui.Parent = pGui
 
 -- ═══════════════════════════════════════════
--- MAIN WINDOW
+-- MAIN WINDOW  (500 x 320)
 -- ═══════════════════════════════════════════
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainWindow"
-mainFrame.Size = UDim2.new(0, 240, 0, 300)
-mainFrame.Position = UDim2.new(0.35, 0, 0.28, 0)
+mainFrame.Size = UDim2.new(0, 500, 0, 320)
+mainFrame.Position = UDim2.new(0.5, -250, 0.5, -160)
 mainFrame.BackgroundColor3 = THEME.BG_DARK
 mainFrame.BorderSizePixel = 0
 mainFrame.Active = true
@@ -133,8 +126,8 @@ stroke(mainFrame, THEME.BORDER, 1, 0)
 
 -- Top glow line
 local topGlow = Instance.new("Frame")
-topGlow.Size = UDim2.new(0.6, 0, 0, 2)
-topGlow.Position = UDim2.new(0.2, 0, 0, 0)
+topGlow.Size = UDim2.new(0.5, 0, 0, 2)
+topGlow.Position = UDim2.new(0.25, 0, 0, 0)
 topGlow.BackgroundColor3 = THEME.ACCENT
 topGlow.BorderSizePixel = 0
 topGlow.Parent = mainFrame
@@ -144,13 +137,12 @@ corner(topGlow, 2)
 -- HEADER
 -- ═══════════════════════════════════════════
 local header = Instance.new("Frame")
-header.Size = UDim2.new(1, 0, 0, 58)
+header.Size = UDim2.new(1, 0, 0, 52)
 header.BackgroundColor3 = THEME.BG_PANEL
 header.BorderSizePixel = 0
 header.Parent = mainFrame
 corner(header, 16)
 
--- Fix bottom corners header
 local headerFix = Instance.new("Frame")
 headerFix.Size = UDim2.new(1, 0, 0, 10)
 headerFix.Position = UDim2.new(0, 0, 1, -10)
@@ -158,14 +150,14 @@ headerFix.BackgroundColor3 = THEME.BG_PANEL
 headerFix.BorderSizePixel = 0
 headerFix.Parent = header
 
--- Logo box
+-- Logo
 local logoBox = Instance.new("Frame")
-logoBox.Size = UDim2.new(0, 34, 0, 34)
-logoBox.Position = UDim2.new(0, 14, 0.5, -17)
+logoBox.Size = UDim2.new(0, 32, 0, 32)
+logoBox.Position = UDim2.new(0, 12, 0.5, -16)
 logoBox.BackgroundColor3 = THEME.ACCENT
 logoBox.BorderSizePixel = 0
 logoBox.Parent = header
-corner(logoBox, 10)
+corner(logoBox, 9)
 gradient(logoBox, THEME.ACCENT, THEME.ACCENT_GLOW, 135)
 
 local logoText = Instance.new("TextLabel")
@@ -174,25 +166,24 @@ logoText.BackgroundTransparency = 1
 logoText.Text = "T"
 logoText.TextColor3 = Color3.fromRGB(255, 255, 255)
 logoText.Font = Enum.Font.GothamBold
-logoText.TextSize = 18
+logoText.TextSize = 16
 logoText.Parent = logoBox
 
 -- Title
 local titleMain = Instance.new("TextLabel")
-titleMain.Size = UDim2.new(1, -110, 0, 20)
-titleMain.Position = UDim2.new(0, 56, 0, 10)
+titleMain.Size = UDim2.new(1, -160, 0, 18)
+titleMain.Position = UDim2.new(0, 52, 0, 9)
 titleMain.BackgroundTransparency = 1
 titleMain.Text = "TIOO BETA V1"
 titleMain.TextColor3 = THEME.TEXT_PRIMARY
 titleMain.Font = Enum.Font.GothamBold
-titleMain.TextSize = 14
+titleMain.TextSize = 13
 titleMain.TextXAlignment = Enum.TextXAlignment.Left
 titleMain.Parent = header
 
--- Subtitle
 local titleSub = Instance.new("TextLabel")
-titleSub.Size = UDim2.new(1, -110, 0, 16)
-titleSub.Position = UDim2.new(0, 56, 0, 30)
+titleSub.Size = UDim2.new(1, -160, 0, 14)
+titleSub.Position = UDim2.new(0, 52, 0, 29)
 titleSub.BackgroundTransparency = 1
 titleSub.Text = "Ninja Legends  •  Pro Edition"
 titleSub.TextColor3 = THEME.TEXT_MUTED
@@ -204,7 +195,7 @@ titleSub.Parent = header
 -- Close button
 local closeBtn = Instance.new("TextButton")
 closeBtn.Size = UDim2.new(0, 28, 0, 28)
-closeBtn.Position = UDim2.new(1, -42, 0.5, -14)
+closeBtn.Position = UDim2.new(1, -40, 0.5, -14)
 closeBtn.BackgroundColor3 = Color3.fromRGB(45, 20, 20)
 closeBtn.Text = "✕"
 closeBtn.TextColor3 = THEME.RED
@@ -216,21 +207,20 @@ corner(closeBtn, 8)
 stroke(closeBtn, THEME.RED, 1, 0.6)
 
 closeBtn.MouseEnter:Connect(function()
-    tween(closeBtn, 0.15, {BackgroundColor3 = THEME.RED, TextColor3 = Color3.fromRGB(255, 255, 255)})
+    tween(closeBtn, 0.15, {BackgroundColor3 = THEME.RED, TextColor3 = Color3.fromRGB(255,255,255)})
 end)
 closeBtn.MouseLeave:Connect(function()
-    tween(closeBtn, 0.15, {BackgroundColor3 = Color3.fromRGB(45, 20, 20), TextColor3 = THEME.RED})
+    tween(closeBtn, 0.15, {BackgroundColor3 = Color3.fromRGB(45,20,20), TextColor3 = THEME.RED})
 end)
 
--- Draggable via header
 makeDraggable(mainFrame, header)
 
 -- ═══════════════════════════════════════════
--- CONTENT AREA + SCROLL
+-- CONTENT AREA + SCROLL  (kiri, lebar penuh)
 -- ═══════════════════════════════════════════
 local contentArea = Instance.new("Frame")
-contentArea.Size = UDim2.new(1, -20, 1, -80)
-contentArea.Position = UDim2.new(0, 10, 0, 66)
+contentArea.Size = UDim2.new(1, -20, 1, -68)
+contentArea.Position = UDim2.new(0, 10, 0, 60)
 contentArea.BackgroundTransparency = 1
 contentArea.BorderSizePixel = 0
 contentArea.ClipsDescendants = true
@@ -245,20 +235,37 @@ scroll.BackgroundTransparency = 1
 scroll.BorderSizePixel = 0
 scroll.Parent = contentArea
 
-local listLayout = Instance.new("UIListLayout")
-listLayout.Padding = UDim.new(0, 8)
-listLayout.SortOrder = Enum.SortOrder.LayoutOrder
-listLayout.Parent = scroll
+-- Grid layout 2 kolom
+local gridLayout = Instance.new("UIGridLayout")
+gridLayout.CellSize = UDim2.new(0.5, -6, 0, 60)
+gridLayout.CellPadding = UDim2.new(0, 8, 0, 8)
+gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+gridLayout.Parent = scroll
 
--- Auto canvas size
-listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-    scroll.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + 20)
+gridLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+    scroll.CanvasSize = UDim2.new(0, 0, 0, gridLayout.AbsoluteContentSize.Y + 20)
 end)
 
-local listPadding = Instance.new("UIPadding")
-listPadding.PaddingBottom = UDim.new(0, 20)
-listPadding.PaddingTop = UDim.new(0, 4)
-listPadding.Parent = scroll
+local gridPadding = Instance.new("UIPadding")
+gridPadding.PaddingTop = UDim.new(0, 6)
+gridPadding.PaddingBottom = UDim.new(0, 10)
+gridPadding.PaddingLeft = UDim.new(0, 2)
+gridPadding.PaddingRight = UDim.new(0, 2)
+gridPadding.Parent = scroll
+
+-- ═══════════════════════════════════════════
+-- VERSION LABEL
+-- ═══════════════════════════════════════════
+local verLabel = Instance.new("TextLabel")
+verLabel.Size = UDim2.new(1, 0, 0, 14)
+verLabel.Position = UDim2.new(0, 0, 1, -16)
+verLabel.BackgroundTransparency = 1
+verLabel.Text = "TIOO HUB  •  Ninja Legends  •  Build 001"
+verLabel.TextColor3 = THEME.TEXT_MUTED
+verLabel.Font = Enum.Font.Gotham
+verLabel.TextSize = 9
+verLabel.TextXAlignment = Enum.TextXAlignment.Center
+verLabel.Parent = mainFrame
 
 -- ═══════════════════════════════════════════
 -- FLOATING OPEN BUTTON
@@ -283,7 +290,7 @@ openBtn.MouseLeave:Connect(function() tween(openBtn, 0.15, {BackgroundColor3 = T
 
 -- Close / Open logic
 closeBtn.MouseButton1Click:Connect(function()
-    tween(mainFrame, 0.2, {Size = UDim2.new(0, 240, 0, 0)})
+    tween(mainFrame, 0.2, {Size = UDim2.new(0, 500, 0, 0)})
     task.delay(0.2, function()
         mainFrame.Visible = false
         openBtn.Visible = true
@@ -292,26 +299,26 @@ end)
 
 openBtn.MouseButton1Click:Connect(function()
     mainFrame.Visible = true
-    mainFrame.Size = UDim2.new(0, 240, 0, 0)
-    tween(mainFrame, 0.25, {Size = UDim2.new(0, 240, 0, 420)})
+    mainFrame.Size = UDim2.new(0, 500, 0, 0)
+    tween(mainFrame, 0.25, {Size = UDim2.new(0, 500, 0, 320)})
     openBtn.Visible = false
 end)
 
--- Animasi pertama kali muncul
-mainFrame.Size = UDim2.new(0, 240, 0, 0)
-tween(mainFrame, 0.3, {Size = UDim2.new(0, 240, 0, 420)})
+-- Animasi pertama kali
+mainFrame.Size = UDim2.new(0, 500, 0, 0)
+tween(mainFrame, 0.3, {Size = UDim2.new(0, 500, 0, 320)})
 
 -- ═══════════════════════════════════════════
--- EXPORTS (untuk dipakai file lain)
+-- EXPORTS
 -- ═══════════════════════════════════════════
 return {
-    THEME        = THEME,
-    mainGui      = mainGui,
-    mainFrame    = mainFrame,
-    scroll       = scroll,
-    corner       = corner,
-    stroke       = stroke,
-    gradient     = gradient,
-    tween        = tween,
+    THEME         = THEME,
+    mainGui       = mainGui,
+    mainFrame     = mainFrame,
+    scroll        = scroll,
+    corner        = corner,
+    stroke        = stroke,
+    gradient      = gradient,
+    tween         = tween,
     makeDraggable = makeDraggable,
 }
