@@ -3,7 +3,7 @@
 -- ║          by Tioo Dev Team                ║
 -- ╚══════════════════════════════════════════╝
 
-local BASE_URL = "https://raw.githubusercontent.com/Tiooprime2/Tioo-Prime/refs/heads/main/"
+local BASE_URL = "https://raw.githubusercontent.com/Tiooprime2/Ninja-legend/refs/heads/main/"
 
 -- ═══════════════════════════════
 -- LOAD UI DULU
