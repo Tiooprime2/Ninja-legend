@@ -15,7 +15,7 @@ local function init(page, THEME, tween, corner, stroke, mainGui, onClose)
     -- ═══════════════════════════════
     local function makeRow(name, desc, callback)
         local btn = Instance.new("TextButton")
-        btn.Size = UDim2.new(1, 0, 0, 64)
+        btn.Size = UDim2.new(1, 0, 0, 48)
         btn.BackgroundColor3 = THEME.BG_CARD
         btn.Text = ""
         btn.BorderSizePixel = 0
@@ -33,19 +33,19 @@ local function init(page, THEME, tween, corner, stroke, mainGui, onClose)
         corner(accentBar, 2)
 
         local nameL = Instance.new("TextLabel")
-        nameL.Size = UDim2.new(1, -100, 0, 20)
-        nameL.Position = UDim2.new(0, 14, 0, 12)
+        nameL.Size = UDim2.new(1, -100, 0, 18)
+        nameL.Position = UDim2.new(0, 14, 0, 7)
         nameL.BackgroundTransparency = 1
         nameL.Text = name
         nameL.TextColor3 = THEME.TEXT_PRIMARY
         nameL.Font = Enum.Font.GothamBold
-        nameL.TextSize = 13
+        nameL.TextSize = 12
         nameL.TextXAlignment = Enum.TextXAlignment.Left
         nameL.Parent = btn
 
         local descL = Instance.new("TextLabel")
-        descL.Size = UDim2.new(1, -100, 0, 16)
-        descL.Position = UDim2.new(0, 14, 0, 36)
+        descL.Size = UDim2.new(1, -100, 0, 14)
+        descL.Position = UDim2.new(0, 14, 0, 27)
         descL.BackgroundTransparency = 1
         descL.Text = desc
         descL.TextColor3 = THEME.TEXT_MUTED

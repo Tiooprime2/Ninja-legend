@@ -27,7 +27,7 @@ local function init(page, THEME, tween, corner, stroke, mainGui)
     for _, island in ipairs(islands) do
         -- Pakai TextButton bukan Frame agar Activated work
         local btn = Instance.new("Frame")
-        btn.Size = UDim2.new(1, 0, 0, 64)
+        btn.Size = UDim2.new(1, 0, 0, 48)
         btn.BackgroundColor3 = THEME.BG_CARD
         btn.BorderSizePixel = 0
         btn.Parent = page
@@ -43,27 +43,27 @@ local function init(page, THEME, tween, corner, stroke, mainGui)
         corner(accentBar, 2)
 
         local iconL = Instance.new("TextLabel")
-        iconL.Size = UDim2.new(0, 30, 0, 30)
-        iconL.Position = UDim2.new(0, 12, 0.5, -15)
+        iconL.Size = UDim2.new(0, 26, 0, 26)
+        iconL.Position = UDim2.new(0, 12, 0.5, -13)
         iconL.BackgroundTransparency = 1
         iconL.Text = island.icon
-        iconL.TextSize = 20
+        iconL.TextSize = 18
         iconL.Parent = btn
 
         local nameL = Instance.new("TextLabel")
-        nameL.Size = UDim2.new(1, -110, 0, 20)
-        nameL.Position = UDim2.new(0, 48, 0, 12)
+        nameL.Size = UDim2.new(1, -110, 0, 18)
+        nameL.Position = UDim2.new(0, 44, 0, 7)
         nameL.BackgroundTransparency = 1
         nameL.Text = island.name
         nameL.TextColor3 = THEME.TEXT_PRIMARY
         nameL.Font = Enum.Font.GothamBold
-        nameL.TextSize = 13
+        nameL.TextSize = 12
         nameL.TextXAlignment = Enum.TextXAlignment.Left
         nameL.Parent = btn
 
         local coordL = Instance.new("TextLabel")
-        coordL.Size = UDim2.new(1, -110, 0, 16)
-        coordL.Position = UDim2.new(0, 48, 0, 36)
+        coordL.Size = UDim2.new(1, -110, 0, 14)
+        coordL.Position = UDim2.new(0, 44, 0, 27)
         coordL.BackgroundTransparency = 1
         coordL.Text = string.format("%.0f, %.0f, %.0f", island.pos.X, island.pos.Y, island.pos.Z)
         coordL.TextColor3 = THEME.TEXT_MUTED

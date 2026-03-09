@@ -33,7 +33,7 @@ local function init(page, THEME, tween, corner, stroke, mainGui)
 
     for _, el in ipairs(elements) do
         local row = Instance.new("Frame")
-        row.Size = UDim2.new(1, 0, 0, 64)
+        row.Size = UDim2.new(1, 0, 0, 48)
         row.BackgroundColor3 = THEME.BG_CARD
         row.BorderSizePixel = 0
         row.Parent = page
@@ -49,27 +49,27 @@ local function init(page, THEME, tween, corner, stroke, mainGui)
         corner(accentBar, 2)
 
         local iconL = Instance.new("TextLabel")
-        iconL.Size = UDim2.new(0, 30, 0, 30)
-        iconL.Position = UDim2.new(0, 12, 0.5, -15)
+        iconL.Size = UDim2.new(0, 26, 0, 26)
+        iconL.Position = UDim2.new(0, 12, 0.5, -13)
         iconL.BackgroundTransparency = 1
         iconL.Text = el.icon
-        iconL.TextSize = 20
+        iconL.TextSize = 18
         iconL.Parent = row
 
         local nameL = Instance.new("TextLabel")
-        nameL.Size = UDim2.new(1, -110, 0, 20)
-        nameL.Position = UDim2.new(0, 48, 0, 12)
+        nameL.Size = UDim2.new(1, -110, 0, 18)
+        nameL.Position = UDim2.new(0, 44, 0, 7)
         nameL.BackgroundTransparency = 1
         nameL.Text = el.name
         nameL.TextColor3 = THEME.TEXT_PRIMARY
         nameL.Font = Enum.Font.GothamBold
-        nameL.TextSize = 13
+        nameL.TextSize = 12
         nameL.TextXAlignment = Enum.TextXAlignment.Left
         nameL.Parent = row
 
         local statusL = Instance.new("TextLabel")
-        statusL.Size = UDim2.new(1, -110, 0, 16)
-        statusL.Position = UDim2.new(0, 48, 0, 36)
+        statusL.Size = UDim2.new(1, -110, 0, 14)
+        statusL.Position = UDim2.new(0, 44, 0, 27)
         statusL.BackgroundTransparency = 1
         statusL.Text = "Tap USE to equip"
         statusL.TextColor3 = THEME.TEXT_MUTED
