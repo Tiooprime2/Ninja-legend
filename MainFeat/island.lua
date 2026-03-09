@@ -2,7 +2,7 @@
 -- ║       TIOO BETA V1 — ISLAND MODULE       ║
 -- ╚══════════════════════════════════════════╝
 
-local function init(scroll, THEME, tween, corner, stroke, mainGui)
+local function init(scroll, THEME, tween, corner, stroke, mainGui, onClose)
 
     local Players = game:GetService("Players")
     local player  = Players.LocalPlayer
@@ -201,6 +201,19 @@ local function init(scroll, THEME, tween, corner, stroke, mainGui)
     end
 
     btn.MouseButton1Click:Connect(toggleDropdown)
+
+    -- Tutup dropdown saat UI di-close
+    if onClose then
+        onClose(function()
+            if isOpen then
+                isOpen = false
+                dropdown.Visible = false
+                arrow.Rotation = 0
+                descLbl.Text = "3 islands available"
+                descLbl.TextColor3 = THEME.TEXT_MUTED
+            end
+        end)
+    end
 
 end
 

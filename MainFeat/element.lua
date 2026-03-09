@@ -2,7 +2,7 @@
 -- ║      TIOO BETA V1 — ELEMENT MODULE       ║
 -- ╚══════════════════════════════════════════╝
 
-local function init(scroll, THEME, tween, corner, stroke, mainGui)
+local function init(scroll, THEME, tween, corner, stroke, mainGui, onClose)
 
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
     local PURPLE = Color3.fromRGB(180, 100, 255)
@@ -80,7 +80,7 @@ local function init(scroll, THEME, tween, corner, stroke, mainGui)
     arrow.TextSize = 14
     arrow.Parent = btn
 
-    -- ═══ DROPDOWN (float di mainGui) ═══
+    -- ═══ DROPDOWN dengan ScrollingFrame (float di mainGui) ═══
     local dropdown = Instance.new("Frame")
     dropdown.Size = UDim2.new(0, 200, 0, 0)
     dropdown.BackgroundColor3 = THEME.BG_PANEL
@@ -92,16 +92,31 @@ local function init(scroll, THEME, tween, corner, stroke, mainGui)
     corner(dropdown, 8)
     stroke(dropdown, PURPLE, 1, 0.4)
 
+    -- ScrollingFrame di dalam dropdown
+    local dropScroll = Instance.new("ScrollingFrame")
+    dropScroll.Size = UDim2.new(1, 0, 1, 0)
+    dropScroll.BackgroundTransparency = 1
+    dropScroll.BorderSizePixel = 0
+    dropScroll.ScrollBarThickness = 3
+    dropScroll.ScrollBarImageColor3 = PURPLE
+    dropScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+    dropScroll.ZIndex = 99
+    dropScroll.Parent = dropdown
+
     local listLayout = Instance.new("UIListLayout")
     listLayout.Padding = UDim.new(0, 4)
-    listLayout.Parent = dropdown
+    listLayout.Parent = dropScroll
+
+    listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+        dropScroll.CanvasSize = UDim2.new(0, 0, 0, listLayout.AbsoluteContentSize.Y + 16)
+    end)
 
     local pad = Instance.new("UIPadding")
     pad.PaddingTop = UDim.new(0, 8)
     pad.PaddingBottom = UDim.new(0, 8)
     pad.PaddingLeft = UDim.new(0, 8)
     pad.PaddingRight = UDim.new(0, 8)
-    pad.Parent = dropdown
+    pad.Parent = dropScroll
 
     for _, data in pairs(elements) do
         local row = Instance.new("TextButton")
@@ -110,7 +125,7 @@ local function init(scroll, THEME, tween, corner, stroke, mainGui)
         row.Text = ""
         row.BorderSizePixel = 0
         row.ZIndex = 100
-        row.Parent = dropdown
+        row.Parent = dropScroll
         corner(row, 6)
 
         local iconR = Instance.new("TextLabel")
@@ -166,7 +181,8 @@ local function init(scroll, THEME, tween, corner, stroke, mainGui)
         end)
     end
 
-    local dropdownHeight = (#elements * 40) + 20
+    -- Tinggi max dropdown 200px, isi bisa di-scroll
+    local maxDropHeight = 200
 
     local function updateDropdownPos()
         local absPos  = btn.AbsolutePosition
@@ -180,7 +196,7 @@ local function init(scroll, THEME, tween, corner, stroke, mainGui)
 
         if isOpen then
             dropdown.Visible = true
-            tween(dropdown, 0.25, {Size = UDim2.new(0, btn.AbsoluteSize.X, 0, dropdownHeight)}):Play()
+            tween(dropdown, 0.25, {Size = UDim2.new(0, btn.AbsoluteSize.X, 0, maxDropHeight)}):Play()
             tween(arrow, 0.25, {Rotation = 180}):Play()
             descLbl.Text = "Pilih element kamu"
             descLbl.TextColor3 = PURPLE
@@ -196,6 +212,19 @@ local function init(scroll, THEME, tween, corner, stroke, mainGui)
     end
 
     btn.MouseButton1Click:Connect(toggleDropdown)
+
+    -- Tutup dropdown saat UI di-close
+    if onClose then
+        onClose(function()
+            if isOpen then
+                isOpen = false
+                dropdown.Visible = false
+                arrow.Rotation = 0
+                descLbl.Text = "9 elements available"
+                descLbl.TextColor3 = THEME.TEXT_MUTED
+            end
+        end)
+    end
 
 end
 
