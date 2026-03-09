@@ -112,11 +112,11 @@ mainGui.ResetOnSpawn = false
 mainGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 mainGui.Parent = pGui
 
--- Main Window (510x330)
+-- Main Window (510x360)
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainWindow"
-mainFrame.Size = UDim2.new(0, 510, 0, 330)
-mainFrame.Position = UDim2.new(0.5, -255, 0.5, -165)
+mainFrame.Size = UDim2.new(0, 510, 0, 360)
+mainFrame.Position = UDim2.new(0.5, -255, 0.5, -180)
 mainFrame.BackgroundColor3 = THEME.BG_DARK
 mainFrame.BorderSizePixel = 0
 mainFrame.Active = true
@@ -254,7 +254,7 @@ contentPanel.Size = UDim2.new(1, -108, 1, 0)
 contentPanel.Position = UDim2.new(0, 108, 0, 0)
 contentPanel.BackgroundColor3 = THEME.BG_PANEL
 contentPanel.BorderSizePixel = 0
-contentPanel.ClipsDescendants = false
+contentPanel.ClipsDescendants = true
 contentPanel.Parent = body
 corner(contentPanel, 10)
 stroke(contentPanel, THEME.BORDER, 1, 0.5)
@@ -473,7 +473,7 @@ local function openUI()
     isOpen = true
     mainFrame.Visible = true
     mainFrame.Size = UDim2.new(0, 510, 0, 0)
-    tween(mainFrame, 0.25, {Size = UDim2.new(0, 510, 0, 330)}):Play()
+    tween(mainFrame, 0.25, {Size = UDim2.new(0, 510, 0, 360)}):Play()
     openBtn.Visible = false
 end
 
@@ -482,7 +482,7 @@ openBtn.MouseButton1Click:Connect(openUI)
 
 -- Animasi pertama kali
 mainFrame.Size = UDim2.new(0, 510, 0, 0)
-tween(mainFrame, 0.35, {Size = UDim2.new(0, 510, 0, 330)}):Play()
+tween(mainFrame, 0.35, {Size = UDim2.new(0, 510, 0, 360)}):Play()
 
 -- ═══════════════════════════════════════════
 -- ITEM BUILDER (untuk tiap page)
