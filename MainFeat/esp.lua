@@ -92,8 +92,15 @@ local function init(scroll, THEME, tween, corner, stroke)
 
                 if visible then
                     local dist  = (hrp.Position - Camera.CFrame.Position).Magnitude
-                    local scale = 1 / dist * 100
+                    -- Clamp scale: min 20 studs, max 200 studs agar box tidak meledak saat dekat
+                    local clampedDist = math.clamp(dist, 20, 200)
+                    local scale = 1 / clampedDist * 100
                     local size  = Vector2.new(36, 50) * scale
+                    -- Clamp size agar tidak terlalu besar/kecil
+                    size = Vector2.new(
+                        math.clamp(size.X, 20, 120),
+                        math.clamp(size.Y, 28, 160)
+                    )
                     local color = rainbow()
 
                     -- Box
@@ -132,13 +139,21 @@ local function init(scroll, THEME, tween, corner, stroke)
                         esp.distance.Visible = false
                     end
 
-                    -- Health bar
+                    -- Health bar (fixed max height 60px, tidak ikut scale)
                     if HEALTH_ENABLED then
-                        local hp   = humanoid.Health / humanoid.MaxHealth
-                        local barH = size.Y * hp
-                        esp.healthbar.From    = Vector2.new(pos.X - size.X/2 - 6, pos.Y + size.Y/2)
-                        esp.healthbar.To      = Vector2.new(pos.X - size.X/2 - 6, pos.Y + size.Y/2 - barH)
-                        esp.healthbar.Color   = Color3.fromRGB(0, 255, 0)
+                        local hp    = humanoid.Health / humanoid.MaxHealth
+                        local maxBarH = 60
+                        local barH  = maxBarH * hp
+                        local barX  = pos.X - size.X/2 - 6
+                        local barY  = pos.Y + maxBarH/2
+                        local hpColor = Color3.fromRGB(
+                            math.floor((1 - hp) * 255),
+                            math.floor(hp * 255),
+                            0
+                        )
+                        esp.healthbar.From    = Vector2.new(barX, barY)
+                        esp.healthbar.To      = Vector2.new(barX, barY - barH)
+                        esp.healthbar.Color   = hpColor
                         esp.healthbar.Visible = true
                     else
                         esp.healthbar.Visible = false
