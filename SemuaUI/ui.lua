@@ -112,11 +112,11 @@ mainGui.ResetOnSpawn = false
 mainGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 mainGui.Parent = pGui
 
--- Main Window (580x370)
+-- Main Window (510x330)
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainWindow"
-mainFrame.Size = UDim2.new(0, 580, 0, 370)
-mainFrame.Position = UDim2.new(0.5, -290, 0.5, -185)
+mainFrame.Size = UDim2.new(0, 510, 0, 330)
+mainFrame.Position = UDim2.new(0.5, -255, 0.5, -165)
 mainFrame.BackgroundColor3 = THEME.BG_DARK
 mainFrame.BorderSizePixel = 0
 mainFrame.Active = true
@@ -138,7 +138,7 @@ corner(topGlow, 2)
 -- HEADER
 -- ═══════════════════════════════════════════
 local header = Instance.new("Frame")
-header.Size = UDim2.new(1, 0, 0, 48)
+header.Size = UDim2.new(1, 0, 0, 44)
 header.BackgroundColor3 = THEME.BG_PANEL
 header.BorderSizePixel = 0
 header.Parent = mainFrame
@@ -218,8 +218,8 @@ makeDraggable(mainFrame, header)
 -- BODY (sidebar + content)
 -- ═══════════════════════════════════════════
 local body = Instance.new("Frame")
-body.Size = UDim2.new(1, -16, 1, -60)
-body.Position = UDim2.new(0, 8, 0, 54)
+body.Size = UDim2.new(1, -16, 1, -54)
+body.Position = UDim2.new(0, 8, 0, 50)
 body.BackgroundTransparency = 1
 body.BorderSizePixel = 0
 body.Parent = mainFrame
@@ -228,7 +228,7 @@ body.Parent = mainFrame
 -- SIDEBAR (kiri)
 -- ═══════════════════════════════════════════
 local sidebar = Instance.new("Frame")
-sidebar.Size = UDim2.new(0, 115, 1, 0)
+sidebar.Size = UDim2.new(0, 100, 1, 0)
 sidebar.BackgroundColor3 = THEME.SIDEBAR
 sidebar.BorderSizePixel = 0
 sidebar.Parent = body
@@ -250,8 +250,8 @@ sidePad.Parent = sidebar
 -- CONTENT PANEL (kanan)
 -- ═══════════════════════════════════════════
 local contentPanel = Instance.new("Frame")
-contentPanel.Size = UDim2.new(1, -123, 1, 0)
-contentPanel.Position = UDim2.new(0, 123, 0, 0)
+contentPanel.Size = UDim2.new(1, -108, 1, 0)
+contentPanel.Position = UDim2.new(0, 108, 0, 0)
 contentPanel.BackgroundColor3 = THEME.BG_PANEL
 contentPanel.BorderSizePixel = 0
 contentPanel.ClipsDescendants = false
@@ -462,7 +462,7 @@ end
 local function closeUI()
     isOpen = false
     for _, fn in pairs(closeListeners) do pcall(fn) end
-    tween(mainFrame, 0.2, {Size = UDim2.new(0, 580, 0, 0)}):Play()
+    tween(mainFrame, 0.2, {Size = UDim2.new(0, 510, 0, 0)}):Play()
     task.delay(0.2, function()
         mainFrame.Visible = false
         openBtn.Visible = true
@@ -472,8 +472,8 @@ end
 local function openUI()
     isOpen = true
     mainFrame.Visible = true
-    mainFrame.Size = UDim2.new(0, 580, 0, 0)
-    tween(mainFrame, 0.25, {Size = UDim2.new(0, 580, 0, 370)}):Play()
+    mainFrame.Size = UDim2.new(0, 510, 0, 0)
+    tween(mainFrame, 0.25, {Size = UDim2.new(0, 510, 0, 330)}):Play()
     openBtn.Visible = false
 end
 
@@ -481,8 +481,8 @@ closeBtn.MouseButton1Click:Connect(closeUI)
 openBtn.MouseButton1Click:Connect(openUI)
 
 -- Animasi pertama kali
-mainFrame.Size = UDim2.new(0, 580, 0, 0)
-tween(mainFrame, 0.35, {Size = UDim2.new(0, 580, 0, 370)}):Play()
+mainFrame.Size = UDim2.new(0, 510, 0, 0)
+tween(mainFrame, 0.35, {Size = UDim2.new(0, 510, 0, 330)}):Play()
 
 -- ═══════════════════════════════════════════
 -- ITEM BUILDER (untuk tiap page)
