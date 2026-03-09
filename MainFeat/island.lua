@@ -1,195 +1,150 @@
 -- ╔══════════════════════════════════════════╗
 -- ║       TIOO BETA V1 — ISLAND MODULE       ║
 -- ╚══════════════════════════════════════════╝
--- Cara pakai:
--- local Island = loadstring(game:HttpGet("url/island.lua"))()
--- Island.init(scroll, THEME, tween, corner, stroke)
 
-local function init(scroll, THEME, tween, corner, stroke)
+local function init(scroll, THEME, tween, corner, stroke, mainGui)
 
     local Players = game:GetService("Players")
     local player  = Players.LocalPlayer
 
-    -- ═══════════════════════════════
-    -- DATA (hanya 3 yang work)
-    -- ═══════════════════════════════
     local islands = {
         { name = "Enchanted Island", pos = Vector3.new(61,  765,  -133) },
         { name = "Astral Island",    pos = Vector3.new(241, 2020,  272) },
         { name = "Mystical Island",  pos = Vector3.new(165, 4064,   33) },
     }
 
-    -- ═══════════════════════════════
-    -- HEADER CARD (klik = expand)
-    -- ═══════════════════════════════
-    local isExpanded = false
+    local isOpen = false
 
-    local wrapper = Instance.new("Frame")
-    wrapper.Size = UDim2.new(1, 0, 0, 52)
-    wrapper.BackgroundTransparency = 1
-    wrapper.BorderSizePixel = 0
-    wrapper.LayoutOrder = 2
-    wrapper.ClipsDescendants = false
-    wrapper.Parent = scroll
+    -- ═══ CARD BUTTON (di scroll) ═══
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, 0, 1, 0)
+    btn.BackgroundColor3 = THEME.BG_CARD
+    btn.Text = ""
+    btn.BorderSizePixel = 0
+    btn.LayoutOrder = 2
+    btn.Parent = scroll
+    corner(btn, 10)
+    stroke(btn, THEME.BORDER, 1, 0)
 
-    local wrapLayout = Instance.new("UIListLayout")
-    wrapLayout.Padding = UDim.new(0, 4)
-    wrapLayout.Parent = wrapper
+    local accentBar = Instance.new("Frame")
+    accentBar.Size = UDim2.new(0, 4, 0.6, 0)
+    accentBar.Position = UDim2.new(0, 0, 0.2, 0)
+    accentBar.BackgroundColor3 = THEME.ACCENT
+    accentBar.BorderSizePixel = 0
+    accentBar.Parent = btn
+    corner(accentBar, 2)
 
-    wrapLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        wrapper.Size = UDim2.new(1, 0, 0, wrapLayout.AbsoluteContentSize.Y)
-    end)
+    local iconLabel = Instance.new("TextLabel")
+    iconLabel.Size = UDim2.new(0, 30, 0, 30)
+    iconLabel.Position = UDim2.new(0, 12, 0.5, -15)
+    iconLabel.BackgroundTransparency = 1
+    iconLabel.Text = "🏝️"
+    iconLabel.TextSize = 20
+    iconLabel.Parent = btn
 
-    -- Header button
-    local headerBtn = Instance.new("TextButton")
-    headerBtn.Size = UDim2.new(1, 0, 0, 52)
-    headerBtn.BackgroundColor3 = THEME.BG_CARD
-    headerBtn.Text = ""
-    headerBtn.BorderSizePixel = 0
-    headerBtn.LayoutOrder = 1
-    headerBtn.Parent = wrapper
-    corner(headerBtn, 12)
-    stroke(headerBtn, THEME.BORDER, 1, 0.3)
+    local titleLbl = Instance.new("TextLabel")
+    titleLbl.Size = UDim2.new(1, -100, 0, 20)
+    titleLbl.Position = UDim2.new(0, 48, 0, 10)
+    titleLbl.BackgroundTransparency = 1
+    titleLbl.Text = "ISLAND TELEPORT"
+    titleLbl.TextColor3 = THEME.TEXT_PRIMARY
+    titleLbl.Font = Enum.Font.GothamBold
+    titleLbl.TextSize = 13
+    titleLbl.TextXAlignment = Enum.TextXAlignment.Left
+    titleLbl.Parent = btn
 
-    -- Left accent bar
-    local bar = Instance.new("Frame")
-    bar.Size = UDim2.new(0, 3, 0, 28)
-    bar.Position = UDim2.new(0, 0, 0.5, -14)
-    bar.BackgroundColor3 = THEME.ACCENT
-    bar.BorderSizePixel = 0
-    bar.Parent = headerBtn
-    corner(bar, 2)
+    local descLbl = Instance.new("TextLabel")
+    descLbl.Size = UDim2.new(1, -100, 0, 16)
+    descLbl.Position = UDim2.new(0, 48, 0, 32)
+    descLbl.BackgroundTransparency = 1
+    descLbl.Text = "3 islands available"
+    descLbl.TextColor3 = THEME.TEXT_MUTED
+    descLbl.Font = Enum.Font.Gotham
+    descLbl.TextSize = 11
+    descLbl.TextXAlignment = Enum.TextXAlignment.Left
+    descLbl.Parent = btn
 
-    -- Icon
-    local iconLbl = Instance.new("TextLabel")
-    iconLbl.Size = UDim2.new(0, 32, 0, 32)
-    iconLbl.Position = UDim2.new(0, 12, 0.5, -16)
-    iconLbl.BackgroundTransparency = 1
-    iconLbl.Text = "🏝️"
-    iconLbl.TextSize = 18
-    iconLbl.Font = Enum.Font.GothamBold
-    iconLbl.Parent = headerBtn
-
-    -- Label
-    local lbl = Instance.new("TextLabel")
-    lbl.Size = UDim2.new(1, -90, 0, 18)
-    lbl.Position = UDim2.new(0, 50, 0, 9)
-    lbl.BackgroundTransparency = 1
-    lbl.Text = "ISLAND TELEPORT"
-    lbl.TextColor3 = THEME.TEXT_PRIMARY
-    lbl.Font = Enum.Font.GothamBold
-    lbl.TextSize = 12
-    lbl.TextXAlignment = Enum.TextXAlignment.Left
-    lbl.Parent = headerBtn
-
-    -- Sublabel
-    local sub = Instance.new("TextLabel")
-    sub.Size = UDim2.new(1, -90, 0, 14)
-    sub.Position = UDim2.new(0, 50, 0, 29)
-    sub.BackgroundTransparency = 1
-    sub.Text = "3 islands available"
-    sub.TextColor3 = THEME.TEXT_MUTED
-    sub.Font = Enum.Font.Gotham
-    sub.TextSize = 10
-    sub.TextXAlignment = Enum.TextXAlignment.Left
-    sub.Parent = headerBtn
-
-    -- Arrow indicator
     local arrow = Instance.new("TextLabel")
-    arrow.Size = UDim2.new(0, 20, 1, 0)
-    arrow.Position = UDim2.new(1, -28, 0, 0)
+    arrow.Size = UDim2.new(0, 30, 0, 30)
+    arrow.Position = UDim2.new(1, -40, 0.5, -15)
     arrow.BackgroundTransparency = 1
-    arrow.Text = "›"
-    arrow.TextColor3 = THEME.TEXT_MUTED
+    arrow.Text = "▼"
+    arrow.TextColor3 = THEME.ACCENT
     arrow.Font = Enum.Font.GothamBold
-    arrow.TextSize = 20
-    arrow.Parent = headerBtn
+    arrow.TextSize = 14
+    arrow.Parent = btn
 
-    headerBtn.MouseEnter:Connect(function()
-        if not isExpanded then tween(headerBtn, 0.15, {BackgroundColor3 = THEME.BG_HOVER}) end
-        tween(arrow, 0.15, {TextColor3 = THEME.ACCENT})
-    end)
-    headerBtn.MouseLeave:Connect(function()
-        if not isExpanded then tween(headerBtn, 0.15, {BackgroundColor3 = THEME.BG_CARD}) end
-        tween(arrow, 0.15, {TextColor3 = THEME.TEXT_MUTED})
-    end)
-
-    -- ═══════════════════════════════
-    -- DROPDOWN CONTAINER
-    -- ═══════════════════════════════
+    -- ═══ DROPDOWN (float di mainGui) ═══
     local dropdown = Instance.new("Frame")
-    dropdown.Size = UDim2.new(1, 0, 0, 0)
+    dropdown.Size = UDim2.new(0, 200, 0, 0)
     dropdown.BackgroundColor3 = THEME.BG_PANEL
     dropdown.BorderSizePixel = 0
     dropdown.ClipsDescendants = true
-    dropdown.LayoutOrder = 2
     dropdown.Visible = false
-    dropdown.Parent = wrapper
-    corner(dropdown, 10)
-    stroke(dropdown, THEME.BORDER, 1, 0.4)
+    dropdown.ZIndex = 99
+    dropdown.Parent = mainGui
+    corner(dropdown, 8)
+    stroke(dropdown, THEME.ACCENT, 1, 0.4)
 
-    local dropLayout = Instance.new("UIListLayout")
-    dropLayout.Padding = UDim.new(0, 4)
-    dropLayout.Parent = dropdown
+    local listLayout = Instance.new("UIListLayout")
+    listLayout.Padding = UDim.new(0, 4)
+    listLayout.Parent = dropdown
 
-    local dropPadding = Instance.new("UIPadding")
-    dropPadding.PaddingTop = UDim.new(0, 6)
-    dropPadding.PaddingBottom = UDim.new(0, 6)
-    dropPadding.PaddingLeft = UDim.new(0, 8)
-    dropPadding.PaddingRight = UDim.new(0, 8)
-    dropPadding.Parent = dropdown
+    local pad = Instance.new("UIPadding")
+    pad.PaddingTop = UDim.new(0, 8)
+    pad.PaddingBottom = UDim.new(0, 8)
+    pad.PaddingLeft = UDim.new(0, 8)
+    pad.PaddingRight = UDim.new(0, 8)
+    pad.Parent = dropdown
 
-    -- ═══════════════════════════════
-    -- ISI ISLAND ROWS
-    -- ═══════════════════════════════
-    local fullHeight = 0
-
+    -- Buat option rows
     for _, data in pairs(islands) do
         local row = Instance.new("TextButton")
         row.Size = UDim2.new(1, 0, 0, 36)
         row.BackgroundColor3 = THEME.BG_CARD
         row.Text = ""
         row.BorderSizePixel = 0
+        row.ZIndex = 100
         row.Parent = dropdown
-        corner(row, 8)
+        corner(row, 6)
 
-        -- Dot hijau
         local dot = Instance.new("Frame")
         dot.Size = UDim2.new(0, 7, 0, 7)
-        dot.Position = UDim2.new(0, 10, 0.5, -3)
+        dot.Position = UDim2.new(0, 8, 0.5, -3)
         dot.BackgroundColor3 = THEME.GREEN
         dot.BorderSizePixel = 0
+        dot.ZIndex = 100
         dot.Parent = row
         corner(dot, 4)
 
-        -- Nama island
         local nameLbl = Instance.new("TextLabel")
-        nameLbl.Size = UDim2.new(1, -80, 1, 0)
-        nameLbl.Position = UDim2.new(0, 24, 0, 0)
+        nameLbl.Size = UDim2.new(1, -70, 1, 0)
+        nameLbl.Position = UDim2.new(0, 22, 0, 0)
         nameLbl.BackgroundTransparency = 1
         nameLbl.Text = data.name
         nameLbl.TextColor3 = THEME.TEXT_PRIMARY
         nameLbl.Font = Enum.Font.GothamSemibold
         nameLbl.TextSize = 11
         nameLbl.TextXAlignment = Enum.TextXAlignment.Left
+        nameLbl.ZIndex = 100
         nameLbl.Parent = row
 
-        -- Status label
         local statusLbl = Instance.new("TextLabel")
         statusLbl.Size = UDim2.new(0, 55, 1, 0)
-        statusLbl.Position = UDim2.new(1, -60, 0, 0)
+        statusLbl.Position = UDim2.new(1, -58, 0, 0)
         statusLbl.BackgroundTransparency = 1
         statusLbl.Text = "TELEPORT"
         statusLbl.TextColor3 = THEME.ACCENT
         statusLbl.Font = Enum.Font.GothamBold
         statusLbl.TextSize = 9
+        statusLbl.ZIndex = 100
         statusLbl.Parent = row
 
         row.MouseEnter:Connect(function()
-            tween(row, 0.12, {BackgroundColor3 = Color3.fromRGB(25, 50, 30)})
+            tween(row, 0.12, {BackgroundColor3 = Color3.fromRGB(25, 50, 30)}):Play()
         end)
         row.MouseLeave:Connect(function()
-            tween(row, 0.12, {BackgroundColor3 = THEME.BG_CARD})
+            tween(row, 0.12, {BackgroundColor3 = THEME.BG_CARD}):Play()
         end)
 
         row.MouseButton1Click:Connect(function()
@@ -211,38 +166,41 @@ local function init(scroll, THEME, tween, corner, stroke)
                 statusLbl.TextColor3 = THEME.ACCENT
             end
         end)
-
-        fullHeight = fullHeight + 36 + 4
     end
 
-    fullHeight = fullHeight + 12 -- padding atas bawah
+    local dropdownHeight = (#islands * 40) + 20
 
-    -- ═══════════════════════════════
-    -- EXPAND / COLLAPSE LOGIC
-    -- ═══════════════════════════════
-    headerBtn.MouseButton1Click:Connect(function()
-        isExpanded = not isExpanded
+    -- Update posisi dropdown sesuai posisi btn di layar
+    local function updateDropdownPos()
+        local absPos  = btn.AbsolutePosition
+        local absSize = btn.AbsoluteSize
+        dropdown.Position = UDim2.new(0, absPos.X, 0, absPos.Y + absSize.Y + 5)
+        dropdown.Size = UDim2.new(0, absSize.X, 0, isOpen and dropdownHeight or 0)
+    end
 
-        if isExpanded then
+    -- Toggle
+    local function toggleDropdown()
+        isOpen = not isOpen
+        updateDropdownPos()
+
+        if isOpen then
             dropdown.Visible = true
-            tween(dropdown, 0.2, {Size = UDim2.new(1, 0, 0, fullHeight)})
-            tween(headerBtn, 0.15, {BackgroundColor3 = Color3.fromRGB(20, 35, 55)})
-            stroke(headerBtn, THEME.ACCENT, 1, 0.4)
-            arrow.Text = "⌄"
-            arrow.TextColor3 = THEME.ACCENT
-            sub.Text = "Tap island untuk teleport"
-            sub.TextColor3 = THEME.ACCENT
+            tween(dropdown, 0.25, {Size = UDim2.new(0, btn.AbsoluteSize.X, 0, dropdownHeight)}):Play()
+            tween(arrow, 0.25, {Rotation = 180}):Play()
+            descLbl.Text = "Tap island untuk teleport"
+            descLbl.TextColor3 = THEME.ACCENT
+            tween(btn, 0.15, {BackgroundColor3 = THEME.BG_HOVER}):Play()
         else
-            tween(dropdown, 0.15, {Size = UDim2.new(1, 0, 0, 0)})
-            tween(headerBtn, 0.15, {BackgroundColor3 = THEME.BG_CARD})
-            stroke(headerBtn, THEME.BORDER, 1, 0.3)
-            arrow.Text = "›"
-            arrow.TextColor3 = THEME.TEXT_MUTED
-            sub.Text = "3 islands available"
-            sub.TextColor3 = THEME.TEXT_MUTED
-            task.delay(0.15, function() dropdown.Visible = false end)
+            tween(dropdown, 0.2, {Size = UDim2.new(0, btn.AbsoluteSize.X, 0, 0)}):Play()
+            tween(arrow, 0.2, {Rotation = 0}):Play()
+            descLbl.Text = "3 islands available"
+            descLbl.TextColor3 = THEME.TEXT_MUTED
+            tween(btn, 0.15, {BackgroundColor3 = THEME.BG_CARD}):Play()
+            task.delay(0.2, function() dropdown.Visible = false end)
         end
-    end)
+    end
+
+    btn.MouseButton1Click:Connect(toggleDropdown)
 
 end
 

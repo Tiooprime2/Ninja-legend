@@ -1,17 +1,12 @@
 -- ╔══════════════════════════════════════════╗
 -- ║      TIOO BETA V1 — ELEMENT MODULE       ║
 -- ╚══════════════════════════════════════════╝
--- Cara pakai:
--- local Element = loadstring(game:HttpGet("url/element.lua"))()
--- Element.init(scroll, THEME, tween, corner, stroke)
 
-local function init(scroll, THEME, tween, corner, stroke)
+local function init(scroll, THEME, tween, corner, stroke, mainGui)
 
     local ReplicatedStorage = game:GetService("ReplicatedStorage")
+    local PURPLE = Color3.fromRGB(180, 100, 255)
 
-    -- ═══════════════════════════════
-    -- DATA
-    -- ═══════════════════════════════
     local elements = {
         { name = "Shadow Charge",   icon = "🌑" },
         { name = "Electral Chaos",  icon = "⚡" },
@@ -24,134 +19,89 @@ local function init(scroll, THEME, tween, corner, stroke)
         { name = "Frost",           icon = "❄️" },
     }
 
-    local PURPLE = Color3.fromRGB(180, 100, 255)
+    local isOpen = false
 
-    -- ═══════════════════════════════
-    -- WRAPPER (auto resize)
-    -- ═══════════════════════════════
-    local isExpanded = false
+    -- ═══ CARD BUTTON (di scroll) ═══
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, 0, 1, 0)
+    btn.BackgroundColor3 = THEME.BG_CARD
+    btn.Text = ""
+    btn.BorderSizePixel = 0
+    btn.LayoutOrder = 3
+    btn.Parent = scroll
+    corner(btn, 10)
+    stroke(btn, THEME.BORDER, 1, 0)
 
-    local wrapper = Instance.new("Frame")
-    wrapper.Size = UDim2.new(1, 0, 0, 52)
-    wrapper.BackgroundTransparency = 1
-    wrapper.BorderSizePixel = 0
-    wrapper.LayoutOrder = 3
-    wrapper.ClipsDescendants = false
-    wrapper.Parent = scroll
+    local accentBar = Instance.new("Frame")
+    accentBar.Size = UDim2.new(0, 4, 0.6, 0)
+    accentBar.Position = UDim2.new(0, 0, 0.2, 0)
+    accentBar.BackgroundColor3 = PURPLE
+    accentBar.BorderSizePixel = 0
+    accentBar.Parent = btn
+    corner(accentBar, 2)
 
-    local wrapLayout = Instance.new("UIListLayout")
-    wrapLayout.Padding = UDim.new(0, 4)
-    wrapLayout.Parent = wrapper
+    local iconLabel = Instance.new("TextLabel")
+    iconLabel.Size = UDim2.new(0, 30, 0, 30)
+    iconLabel.Position = UDim2.new(0, 12, 0.5, -15)
+    iconLabel.BackgroundTransparency = 1
+    iconLabel.Text = "✨"
+    iconLabel.TextSize = 20
+    iconLabel.Parent = btn
 
-    wrapLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        wrapper.Size = UDim2.new(1, 0, 0, wrapLayout.AbsoluteContentSize.Y)
-    end)
+    local titleLbl = Instance.new("TextLabel")
+    titleLbl.Size = UDim2.new(1, -100, 0, 20)
+    titleLbl.Position = UDim2.new(0, 48, 0, 10)
+    titleLbl.BackgroundTransparency = 1
+    titleLbl.Text = "ELEMENTS"
+    titleLbl.TextColor3 = THEME.TEXT_PRIMARY
+    titleLbl.Font = Enum.Font.GothamBold
+    titleLbl.TextSize = 13
+    titleLbl.TextXAlignment = Enum.TextXAlignment.Left
+    titleLbl.Parent = btn
 
-    -- ═══════════════════════════════
-    -- HEADER BUTTON
-    -- ═══════════════════════════════
-    local headerBtn = Instance.new("TextButton")
-    headerBtn.Size = UDim2.new(1, 0, 0, 52)
-    headerBtn.BackgroundColor3 = THEME.BG_CARD
-    headerBtn.Text = ""
-    headerBtn.BorderSizePixel = 0
-    headerBtn.LayoutOrder = 1
-    headerBtn.Parent = wrapper
-    corner(headerBtn, 12)
-    stroke(headerBtn, THEME.BORDER, 1, 0.3)
+    local descLbl = Instance.new("TextLabel")
+    descLbl.Size = UDim2.new(1, -100, 0, 16)
+    descLbl.Position = UDim2.new(0, 48, 0, 32)
+    descLbl.BackgroundTransparency = 1
+    descLbl.Text = "9 elements available"
+    descLbl.TextColor3 = THEME.TEXT_MUTED
+    descLbl.Font = Enum.Font.Gotham
+    descLbl.TextSize = 11
+    descLbl.TextXAlignment = Enum.TextXAlignment.Left
+    descLbl.Parent = btn
 
-    -- Left accent bar
-    local bar = Instance.new("Frame")
-    bar.Size = UDim2.new(0, 3, 0, 28)
-    bar.Position = UDim2.new(0, 0, 0.5, -14)
-    bar.BackgroundColor3 = PURPLE
-    bar.BorderSizePixel = 0
-    bar.Parent = headerBtn
-    corner(bar, 2)
-
-    -- Icon
-    local iconLbl = Instance.new("TextLabel")
-    iconLbl.Size = UDim2.new(0, 32, 0, 32)
-    iconLbl.Position = UDim2.new(0, 12, 0.5, -16)
-    iconLbl.BackgroundTransparency = 1
-    iconLbl.Text = "✨"
-    iconLbl.TextSize = 18
-    iconLbl.Font = Enum.Font.GothamBold
-    iconLbl.Parent = headerBtn
-
-    -- Label
-    local lbl = Instance.new("TextLabel")
-    lbl.Size = UDim2.new(1, -90, 0, 18)
-    lbl.Position = UDim2.new(0, 50, 0, 9)
-    lbl.BackgroundTransparency = 1
-    lbl.Text = "ELEMENTS"
-    lbl.TextColor3 = THEME.TEXT_PRIMARY
-    lbl.Font = Enum.Font.GothamBold
-    lbl.TextSize = 12
-    lbl.TextXAlignment = Enum.TextXAlignment.Left
-    lbl.Parent = headerBtn
-
-    -- Sublabel
-    local sub = Instance.new("TextLabel")
-    sub.Size = UDim2.new(1, -90, 0, 14)
-    sub.Position = UDim2.new(0, 50, 0, 29)
-    sub.BackgroundTransparency = 1
-    sub.Text = "9 elements available"
-    sub.TextColor3 = THEME.TEXT_MUTED
-    sub.Font = Enum.Font.Gotham
-    sub.TextSize = 10
-    sub.TextXAlignment = Enum.TextXAlignment.Left
-    sub.Parent = headerBtn
-
-    -- Arrow
     local arrow = Instance.new("TextLabel")
-    arrow.Size = UDim2.new(0, 20, 1, 0)
-    arrow.Position = UDim2.new(1, -28, 0, 0)
+    arrow.Size = UDim2.new(0, 30, 0, 30)
+    arrow.Position = UDim2.new(1, -40, 0.5, -15)
     arrow.BackgroundTransparency = 1
-    arrow.Text = "›"
-    arrow.TextColor3 = THEME.TEXT_MUTED
+    arrow.Text = "▼"
+    arrow.TextColor3 = PURPLE
     arrow.Font = Enum.Font.GothamBold
-    arrow.TextSize = 20
-    arrow.Parent = headerBtn
+    arrow.TextSize = 14
+    arrow.Parent = btn
 
-    headerBtn.MouseEnter:Connect(function()
-        if not isExpanded then tween(headerBtn, 0.15, {BackgroundColor3 = THEME.BG_HOVER}) end
-        tween(arrow, 0.15, {TextColor3 = PURPLE})
-    end)
-    headerBtn.MouseLeave:Connect(function()
-        if not isExpanded then tween(headerBtn, 0.15, {BackgroundColor3 = THEME.BG_CARD}) end
-        tween(arrow, 0.15, {TextColor3 = THEME.TEXT_MUTED})
-    end)
-
-    -- ═══════════════════════════════
-    -- DROPDOWN
-    -- ═══════════════════════════════
+    -- ═══ DROPDOWN (float di mainGui) ═══
     local dropdown = Instance.new("Frame")
-    dropdown.Size = UDim2.new(1, 0, 0, 0)
+    dropdown.Size = UDim2.new(0, 200, 0, 0)
     dropdown.BackgroundColor3 = THEME.BG_PANEL
     dropdown.BorderSizePixel = 0
     dropdown.ClipsDescendants = true
-    dropdown.LayoutOrder = 2
     dropdown.Visible = false
-    dropdown.Parent = wrapper
-    corner(dropdown, 10)
-    stroke(dropdown, PURPLE, 1, 0.6)
+    dropdown.ZIndex = 99
+    dropdown.Parent = mainGui
+    corner(dropdown, 8)
+    stroke(dropdown, PURPLE, 1, 0.4)
 
-    local dropLayout = Instance.new("UIListLayout")
-    dropLayout.Padding = UDim.new(0, 4)
-    dropLayout.Parent = dropdown
+    local listLayout = Instance.new("UIListLayout")
+    listLayout.Padding = UDim.new(0, 4)
+    listLayout.Parent = dropdown
 
-    local dropPadding = Instance.new("UIPadding")
-    dropPadding.PaddingTop = UDim.new(0, 6)
-    dropPadding.PaddingBottom = UDim.new(0, 6)
-    dropPadding.PaddingLeft = UDim.new(0, 8)
-    dropPadding.PaddingRight = UDim.new(0, 8)
-    dropPadding.Parent = dropdown
-
-    -- ═══════════════════════════════
-    -- ELEMENT ROWS
-    -- ═══════════════════════════════
-    local fullHeight = 0
+    local pad = Instance.new("UIPadding")
+    pad.PaddingTop = UDim.new(0, 8)
+    pad.PaddingBottom = UDim.new(0, 8)
+    pad.PaddingLeft = UDim.new(0, 8)
+    pad.PaddingRight = UDim.new(0, 8)
+    pad.Parent = dropdown
 
     for _, data in pairs(elements) do
         local row = Instance.new("TextButton")
@@ -159,55 +109,54 @@ local function init(scroll, THEME, tween, corner, stroke)
         row.BackgroundColor3 = THEME.BG_CARD
         row.Text = ""
         row.BorderSizePixel = 0
+        row.ZIndex = 100
         row.Parent = dropdown
-        corner(row, 8)
+        corner(row, 6)
 
-        -- Icon
         local iconR = Instance.new("TextLabel")
         iconR.Size = UDim2.new(0, 28, 1, 0)
-        iconR.Position = UDim2.new(0, 8, 0, 0)
+        iconR.Position = UDim2.new(0, 6, 0, 0)
         iconR.BackgroundTransparency = 1
         iconR.Text = data.icon
         iconR.TextSize = 16
         iconR.Font = Enum.Font.GothamBold
+        iconR.ZIndex = 100
         iconR.Parent = row
 
-        -- Name
         local nameLbl = Instance.new("TextLabel")
         nameLbl.Size = UDim2.new(1, -80, 1, 0)
-        nameLbl.Position = UDim2.new(0, 40, 0, 0)
+        nameLbl.Position = UDim2.new(0, 36, 0, 0)
         nameLbl.BackgroundTransparency = 1
         nameLbl.Text = data.name
         nameLbl.TextColor3 = THEME.TEXT_PRIMARY
         nameLbl.Font = Enum.Font.GothamSemibold
         nameLbl.TextSize = 11
         nameLbl.TextXAlignment = Enum.TextXAlignment.Left
+        nameLbl.ZIndex = 100
         nameLbl.Parent = row
 
-        -- Status
         local statusLbl = Instance.new("TextLabel")
-        statusLbl.Size = UDim2.new(0, 45, 1, 0)
-        statusLbl.Position = UDim2.new(1, -50, 0, 0)
+        statusLbl.Size = UDim2.new(0, 40, 1, 0)
+        statusLbl.Position = UDim2.new(1, -44, 0, 0)
         statusLbl.BackgroundTransparency = 1
         statusLbl.Text = "USE"
         statusLbl.TextColor3 = PURPLE
         statusLbl.Font = Enum.Font.GothamBold
-        statusLbl.TextSize = 10
+        statusLbl.TextSize = 9
+        statusLbl.ZIndex = 100
         statusLbl.Parent = row
 
         row.MouseEnter:Connect(function()
-            tween(row, 0.12, {BackgroundColor3 = Color3.fromRGB(30, 20, 45)})
+            tween(row, 0.12, {BackgroundColor3 = Color3.fromRGB(30, 20, 45)}):Play()
         end)
         row.MouseLeave:Connect(function()
-            tween(row, 0.12, {BackgroundColor3 = THEME.BG_CARD})
+            tween(row, 0.12, {BackgroundColor3 = THEME.BG_CARD}):Play()
         end)
 
         row.MouseButton1Click:Connect(function()
             local r = ReplicatedStorage:FindFirstChild("rEvents")
             if r then
-                pcall(function()
-                    r.elementMasteryEvent:FireServer(data.name)
-                end)
+                pcall(function() r.elementMasteryEvent:FireServer(data.name) end)
                 statusLbl.Text = "✓ ON"
                 statusLbl.TextColor3 = THEME.GREEN
                 task.wait(1.2)
@@ -215,38 +164,38 @@ local function init(scroll, THEME, tween, corner, stroke)
                 statusLbl.TextColor3 = PURPLE
             end
         end)
-
-        fullHeight = fullHeight + 36 + 4
     end
 
-    fullHeight = fullHeight + 12 -- padding atas bawah
+    local dropdownHeight = (#elements * 40) + 20
 
-    -- ═══════════════════════════════
-    -- EXPAND / COLLAPSE
-    -- ═══════════════════════════════
-    headerBtn.MouseButton1Click:Connect(function()
-        isExpanded = not isExpanded
+    local function updateDropdownPos()
+        local absPos  = btn.AbsolutePosition
+        local absSize = btn.AbsoluteSize
+        dropdown.Position = UDim2.new(0, absPos.X, 0, absPos.Y + absSize.Y + 5)
+    end
 
-        if isExpanded then
+    local function toggleDropdown()
+        isOpen = not isOpen
+        updateDropdownPos()
+
+        if isOpen then
             dropdown.Visible = true
-            tween(dropdown, 0.2, {Size = UDim2.new(1, 0, 0, fullHeight)})
-            tween(headerBtn, 0.15, {BackgroundColor3 = Color3.fromRGB(28, 18, 42)})
-            stroke(headerBtn, PURPLE, 1, 0.4)
-            arrow.Text = "⌄"
-            arrow.TextColor3 = PURPLE
-            sub.Text = "Pilih element kamu"
-            sub.TextColor3 = PURPLE
+            tween(dropdown, 0.25, {Size = UDim2.new(0, btn.AbsoluteSize.X, 0, dropdownHeight)}):Play()
+            tween(arrow, 0.25, {Rotation = 180}):Play()
+            descLbl.Text = "Pilih element kamu"
+            descLbl.TextColor3 = PURPLE
+            tween(btn, 0.15, {BackgroundColor3 = THEME.BG_HOVER}):Play()
         else
-            tween(dropdown, 0.15, {Size = UDim2.new(1, 0, 0, 0)})
-            tween(headerBtn, 0.15, {BackgroundColor3 = THEME.BG_CARD})
-            stroke(headerBtn, THEME.BORDER, 1, 0.3)
-            arrow.Text = "›"
-            arrow.TextColor3 = THEME.TEXT_MUTED
-            sub.Text = "9 elements available"
-            sub.TextColor3 = THEME.TEXT_MUTED
-            task.delay(0.15, function() dropdown.Visible = false end)
+            tween(dropdown, 0.2, {Size = UDim2.new(0, btn.AbsoluteSize.X, 0, 0)}):Play()
+            tween(arrow, 0.2, {Rotation = 0}):Play()
+            descLbl.Text = "9 elements available"
+            descLbl.TextColor3 = THEME.TEXT_MUTED
+            tween(btn, 0.15, {BackgroundColor3 = THEME.BG_CARD}):Play()
+            task.delay(0.2, function() dropdown.Visible = false end)
         end
-    end)
+    end
+
+    btn.MouseButton1Click:Connect(toggleDropdown)
 
 end
 
