@@ -311,9 +311,18 @@ end)
 -- OPEN / CLOSE LOGIC
 -- ═══════════════════════════════════════════
 local isOpen = true
+local closeListeners = {}
+
+local function onClose(fn)
+    table.insert(closeListeners, fn)
+end
 
 local function closeUI()
     isOpen = false
+    -- Panggil semua listener (dropdown ikut tutup)
+    for _, fn in pairs(closeListeners) do
+        pcall(fn)
+    end
     tween(mainFrame, 0.2, {Size = UDim2.new(0, 520, 0, 0)}):Play()
     task.delay(0.2, function()
         mainFrame.Visible = false
@@ -618,6 +627,7 @@ return {
     isOpen        = function() return isOpen end,
     closeUI       = closeUI,
     openUI        = openUI,
+    onClose       = onClose,
     createButton  = createButton,
     createToggle  = createToggle,
     createSlider  = createSlider,
