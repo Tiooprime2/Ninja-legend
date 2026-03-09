@@ -10,6 +10,6 @@ local Island  = loadstring(game:HttpGet(BASE_URL .. "MainFeat/island.lua"))()
 local Element = loadstring(game:HttpGet(BASE_URL .. "MainFeat/element.lua"))()
 
 -- Sambungkan ke UI (mainGui sekarang dikirim juga)
-Island.init(UI.scroll, UI.THEME, UI.tween, UI.corner, UI.stroke, UI.mainGui)
-Element.init(UI.scroll, UI.THEME, UI.tween, UI.corner, UI.stroke, UI.mainGui)
+Island.init(UI.scroll, UI.THEME, UI.tween, UI.corner, UI.stroke, UI.mainGui, UI.onClose)
+Element.init(UI.scroll, UI.THEME, UI.tween, UI.corner, UI.stroke, UI.mainGui, UI.onClose)
 ESP.init(UI.scroll, UI.THEME, UI.tween, UI.corner, UI.stroke)
