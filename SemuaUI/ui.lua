@@ -423,10 +423,11 @@ local function createTab(icon, name)
     return btn, pages[name]
 end
 
--- Buat 3 tab
+-- Buat 4 tab
 local mainTabBtn,    mainPage    = createTab("🏠", "Main")
 local islandTabBtn,  islandPage  = createTab("🗺️", "Island")
 local elementTabBtn, elementPage = createTab("✨", "Element")
+local miscTabBtn,    miscPage    = createTab("⚙️", "Misc")
 
 -- Aktifkan Main secara default
 switchTab("Main", mainTabBtn, "🏠")
@@ -592,6 +593,7 @@ return {
     mainPage      = mainPage,
     islandPage    = islandPage,
     elementPage   = elementPage,
+    miscPage      = miscPage,
     -- Helpers
     createToggle  = createToggle,
     createSection = createSection,
