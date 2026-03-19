@@ -254,6 +254,294 @@ local function init(page, THEME, tween, corner, stroke, mainGui)
         end
     end)
 
+    -- ═══════════════════════════════
+    -- FLY (XNEO TranslateBy)
+    -- ═══════════════════════════════
+    makeSection("Flight")
+
+    local RunService = game:GetService("RunService")
+    local Fly = {}
+    Fly.enabled = false
+    Fly.speed   = 50
+
+    local flyHoverConn, flyMoveConn, flyBG, flyBV
+
+    local function flyEnable()
+        if flyHoverConn then flyHoverConn:Disconnect() end
+        if flyMoveConn  then flyMoveConn:Disconnect()  end
+        if flyBG then flyBG:Destroy() end
+        if flyBV then flyBV:Destroy() end
+
+        local char = player.Character
+        if not char then return end
+        local hum = char:FindFirstChildOfClass("Humanoid")
+        if not hum then return end
+
+        local states = {
+            Enum.HumanoidStateType.Climbing, Enum.HumanoidStateType.FallingDown,
+            Enum.HumanoidStateType.Flying,   Enum.HumanoidStateType.Freefall,
+            Enum.HumanoidStateType.GettingUp,Enum.HumanoidStateType.Jumping,
+            Enum.HumanoidStateType.Landed,   Enum.HumanoidStateType.Physics,
+            Enum.HumanoidStateType.PlatformStanding, Enum.HumanoidStateType.Ragdoll,
+            Enum.HumanoidStateType.Running,  Enum.HumanoidStateType.RunningNoPhysics,
+            Enum.HumanoidStateType.Seated,   Enum.HumanoidStateType.StrafingNoPhysics,
+            Enum.HumanoidStateType.Swimming,
+        }
+        for _, s in ipairs(states) do hum:SetStateEnabled(s, false) end
+        hum:ChangeState(Enum.HumanoidStateType.Swimming)
+        char.Animate.Disabled = true
+        for _, t in ipairs(hum:GetPlayingAnimationTracks()) do t:AdjustSpeed(0) end
+        hum.PlatformStand = true
+
+        local torso = char:FindFirstChild("UpperTorso") or char:FindFirstChild("Torso")
+        if not torso then return end
+
+        flyBG = Instance.new("BodyGyro", torso)
+        flyBG.P = 9e4; flyBG.MaxTorque = Vector3.new(9e9,9e9,9e9)
+        flyBG.CFrame = torso.CFrame
+
+        flyBV = Instance.new("BodyVelocity", torso)
+        flyBV.Velocity = Vector3.zero; flyBV.MaxForce = Vector3.new(9e9,9e9,9e9)
+
+        flyHoverConn = RunService.RenderStepped:Connect(function()
+            if not Fly.enabled then return end
+            if flyBG then flyBG.CFrame = workspace.CurrentCamera.CoordinateFrame end
+        end)
+
+        flyMoveConn = RunService.Heartbeat:Connect(function()
+            if not Fly.enabled then return end
+            local c2 = player.Character; if not c2 then return end
+            local h2 = c2:FindFirstChildOfClass("Humanoid"); if not h2 then return end
+            if h2.MoveDirection.Magnitude > 0 then
+                c2:TranslateBy(h2.MoveDirection * (Fly.speed / 50))
+            end
+        end)
+    end
+
+    local function flyDisable()
+        Fly.enabled = false
+        if flyHoverConn then flyHoverConn:Disconnect(); flyHoverConn = nil end
+        if flyMoveConn  then flyMoveConn:Disconnect();  flyMoveConn  = nil end
+        if flyBG then flyBG:Destroy(); flyBG = nil end
+        if flyBV then flyBV:Destroy(); flyBV = nil end
+        local char = player.Character; if not char then return end
+        local hum = char:FindFirstChildOfClass("Humanoid"); if not hum then return end
+        hum.PlatformStand = false
+        char.Animate.Disabled = false
+        local states = {
+            Enum.HumanoidStateType.Climbing, Enum.HumanoidStateType.FallingDown,
+            Enum.HumanoidStateType.Flying,   Enum.HumanoidStateType.Freefall,
+            Enum.HumanoidStateType.GettingUp,Enum.HumanoidStateType.Jumping,
+            Enum.HumanoidStateType.Landed,   Enum.HumanoidStateType.Physics,
+            Enum.HumanoidStateType.PlatformStanding, Enum.HumanoidStateType.Ragdoll,
+            Enum.HumanoidStateType.Running,  Enum.HumanoidStateType.RunningNoPhysics,
+            Enum.HumanoidStateType.Seated,   Enum.HumanoidStateType.StrafingNoPhysics,
+            Enum.HumanoidStateType.Swimming,
+        }
+        for _, s in ipairs(states) do hum:SetStateEnabled(s, true) end
+        hum:ChangeState(Enum.HumanoidStateType.RunningNoPhysics)
+    end
+
+    -- Fly card
+    local flyCard = Instance.new("Frame")
+    flyCard.Size             = UDim2.new(1, 0, 0, 90)
+    flyCard.BackgroundColor3 = THEME.BG_CARD
+    flyCard.BorderSizePixel  = 0
+    flyCard.Parent           = page
+    corner(flyCard, 10)
+    stroke(flyCard, THEME.BORDER, 1, 0)
+
+    local flyAccBar = Instance.new("Frame")
+    flyAccBar.Size             = UDim2.new(0, 4, 0.85, 0)
+    flyAccBar.Position         = UDim2.new(0, 0, 0.075, 0)
+    flyAccBar.BackgroundColor3 = THEME.TEXT_MUTED
+    flyAccBar.BorderSizePixel  = 0
+    flyAccBar.Parent           = flyCard
+    corner(flyAccBar, 2)
+
+    local flyIcon = Instance.new("TextLabel")
+    flyIcon.Size                  = UDim2.new(0, 26, 0, 26)
+    flyIcon.Position              = UDim2.new(0, 12, 0, 10)
+    flyIcon.BackgroundTransparency = 1
+    flyIcon.Text                  = "🪂"
+    flyIcon.TextSize              = 18
+    flyIcon.Parent                = flyCard
+
+    local flyNameL = Instance.new("TextLabel")
+    flyNameL.Size                  = UDim2.new(1, -110, 0, 18)
+    flyNameL.Position              = UDim2.new(0, 44, 0, 10)
+    flyNameL.BackgroundTransparency = 1
+    flyNameL.Text                  = "Fly"
+    flyNameL.TextColor3            = THEME.TEXT_PRIMARY
+    flyNameL.Font                  = Enum.Font.GothamBold
+    flyNameL.TextSize              = 12
+    flyNameL.TextXAlignment        = Enum.TextXAlignment.Left
+    flyNameL.Parent                = flyCard
+
+    local flyBadge = Instance.new("Frame")
+    flyBadge.Size             = UDim2.new(0, 44, 0, 22)
+    flyBadge.Position         = UDim2.new(1, -54, 0, 10)
+    flyBadge.BackgroundColor3 = Color3.fromRGB(40, 40, 55)
+    flyBadge.BorderSizePixel  = 0
+    flyBadge.Parent           = flyCard
+    corner(flyBadge, 11)
+
+    local flyBadgeTxt = Instance.new("TextLabel")
+    flyBadgeTxt.Size                  = UDim2.new(1, 0, 1, 0)
+    flyBadgeTxt.BackgroundTransparency = 1
+    flyBadgeTxt.Text                  = "OFF"
+    flyBadgeTxt.TextColor3            = THEME.TEXT_MUTED
+    flyBadgeTxt.Font                  = Enum.Font.GothamBold
+    flyBadgeTxt.TextSize              = 10
+    flyBadgeTxt.Parent                = flyBadge
+
+    -- Speed value label
+    local flySpeedVal = Instance.new("TextLabel")
+    flySpeedVal.Size                  = UDim2.new(0, 40, 0, 16)
+    flySpeedVal.Position              = UDim2.new(1, -54, 0, 36)
+    flySpeedVal.BackgroundTransparency = 1
+    flySpeedVal.Text                  = tostring(Fly.speed)
+    flySpeedVal.TextColor3            = THEME.ACCENT
+    flySpeedVal.Font                  = Enum.Font.GothamBold
+    flySpeedVal.TextSize              = 11
+    flySpeedVal.TextXAlignment        = Enum.TextXAlignment.Center
+    flySpeedVal.Parent                = flyCard
+
+    -- Slider
+    local flyTrack = Instance.new("Frame")
+    flyTrack.Size             = UDim2.new(1, -24, 0, 5)
+    flyTrack.Position         = UDim2.new(0, 12, 0, 58)
+    flyTrack.BackgroundColor3 = THEME.BG_HOVER
+    flyTrack.BorderSizePixel  = 0
+    flyTrack.Parent           = flyCard
+    corner(flyTrack, 3)
+
+    local flyFill = Instance.new("Frame")
+    flyFill.Size             = UDim2.new(Fly.speed / 500, 0, 1, 0)
+    flyFill.BackgroundColor3 = THEME.ACCENT
+    flyFill.BorderSizePixel  = 0
+    flyFill.Parent           = flyTrack
+    corner(flyFill, 3)
+
+    local flyKnob = Instance.new("TextButton")
+    flyKnob.Size             = UDim2.new(0, 18, 0, 18)
+    flyKnob.Position         = UDim2.new(Fly.speed / 500, -9, 0.5, -9)
+    flyKnob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    flyKnob.Text             = ""
+    flyKnob.BorderSizePixel  = 0
+    flyKnob.AutoButtonColor  = false
+    flyKnob.Parent           = flyTrack
+    corner(flyKnob, 9)
+    stroke(flyKnob, THEME.ACCENT, 2, 0)
+
+    local flyMinL = Instance.new("TextLabel")
+    flyMinL.Size                  = UDim2.new(0, 20, 0, 14)
+    flyMinL.Position              = UDim2.new(0, 12, 0, 70)
+    flyMinL.BackgroundTransparency = 1
+    flyMinL.Text                  = "0"
+    flyMinL.TextColor3            = THEME.TEXT_MUTED
+    flyMinL.Font                  = Enum.Font.Gotham
+    flyMinL.TextSize              = 9
+    flyMinL.TextXAlignment        = Enum.TextXAlignment.Left
+    flyMinL.Parent                = flyCard
+
+    local flyMaxL = Instance.new("TextLabel")
+    flyMaxL.Size                  = UDim2.new(0, 30, 0, 14)
+    flyMaxL.Position              = UDim2.new(1, -42, 0, 70)
+    flyMaxL.BackgroundTransparency = 1
+    flyMaxL.Text                  = "500"
+    flyMaxL.TextColor3            = THEME.TEXT_MUTED
+    flyMaxL.Font                  = Enum.Font.Gotham
+    flyMaxL.TextSize              = 9
+    flyMaxL.TextXAlignment        = Enum.TextXAlignment.Right
+    flyMaxL.Parent                = flyCard
+
+    -- Slider logic
+    local flyDragging = false
+
+    local function applyFlySpeed(val)
+        Fly.speed = val
+        flySpeedVal.Text = tostring(val)
+        local pct = val / 500
+        flyFill.Size    = UDim2.new(pct, 0, 1, 0)
+        flyKnob.Position = UDim2.new(pct, -9, 0.5, -9)
+    end
+
+    local function flySliderUpdate(input)
+        local pct = math.clamp(
+            (input.Position.X - flyTrack.AbsolutePosition.X) / flyTrack.AbsoluteSize.X,
+            0, 1
+        )
+        applyFlySpeed(math.floor(pct * 500))
+    end
+
+    flyKnob.InputBegan:Connect(function(i)
+        if i.UserInputType == Enum.UserInputType.MouseButton1
+        or i.UserInputType == Enum.UserInputType.Touch then
+            flyDragging = true
+        end
+    end)
+    flyTrack.InputBegan:Connect(function(i)
+        if i.UserInputType == Enum.UserInputType.MouseButton1
+        or i.UserInputType == Enum.UserInputType.Touch then
+            flyDragging = true
+            flySliderUpdate(i)
+        end
+    end)
+    UserInputService.InputChanged:Connect(function(i)
+        if flyDragging and (
+            i.UserInputType == Enum.UserInputType.MouseMovement or
+            i.UserInputType == Enum.UserInputType.Touch
+        ) then flySliderUpdate(i) end
+    end)
+    UserInputService.InputEnded:Connect(function(i)
+        if i.UserInputType == Enum.UserInputType.MouseButton1
+        or i.UserInputType == Enum.UserInputType.Touch then
+            flyDragging = false
+        end
+    end)
+
+    -- Badge toggle
+    local flyOn = false
+    flyBadge.InputBegan:Connect(function(i)
+        if i.UserInputType == Enum.UserInputType.MouseButton1
+        or i.UserInputType == Enum.UserInputType.Touch then
+            flyOn = not flyOn
+            Fly.enabled = flyOn
+            if flyOn then
+                flyEnable()
+                tween(flyCard,    0.2, {BackgroundColor3 = Color3.fromRGB(15,40,20)}):Play()
+                tween(flyAccBar,  0.2, {BackgroundColor3 = THEME.ACCENT}):Play()
+                tween(flyBadge,   0.2, {BackgroundColor3 = THEME.GREEN}):Play()
+                flyBadgeTxt.Text      = "ON"
+                flyBadgeTxt.TextColor3 = Color3.fromRGB(255,255,255)
+                stroke(flyCard, THEME.GREEN, 1, 0.4)
+            else
+                flyDisable()
+                tween(flyCard,   0.2, {BackgroundColor3 = THEME.BG_CARD}):Play()
+                tween(flyAccBar, 0.2, {BackgroundColor3 = THEME.TEXT_MUTED}):Play()
+                tween(flyBadge,  0.2, {BackgroundColor3 = Color3.fromRGB(40,40,55)}):Play()
+                flyBadgeTxt.Text       = "OFF"
+                flyBadgeTxt.TextColor3 = THEME.TEXT_MUTED
+                stroke(flyCard, THEME.BORDER, 1, 0)
+            end
+        end
+    end)
+
+    -- Auto disable saat respawn
+    player.CharacterAdded:Connect(function()
+        flyOn = false
+        Fly.enabled = false
+        flyDisable()
+        tween(flyCard,   0.2, {BackgroundColor3 = THEME.BG_CARD}):Play()
+        tween(flyAccBar, 0.2, {BackgroundColor3 = THEME.TEXT_MUTED}):Play()
+        tween(flyBadge,  0.2, {BackgroundColor3 = Color3.fromRGB(40,40,55)}):Play()
+        flyBadgeTxt.Text       = "OFF"
+        flyBadgeTxt.TextColor3 = THEME.TEXT_MUTED
+    end)
+
 end
 
 return { init = init }
+
+-- placeholder marker for fly section
