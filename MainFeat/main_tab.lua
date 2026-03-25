@@ -270,25 +270,29 @@ local function init(page, THEME, tween, corner, stroke, mainGui, onClose)
                 local pos, vis = Camera:WorldToViewportPoint(hrp.Position)
                 if vis then
                     local d   = (hrp.Position - Camera.CFrame.Position).Magnitude
-                    local sc  = 1 / math.clamp(d, 20, 200) * 100
-                    local sz  = Vector2.new(math.clamp(36*sc,20,120), math.clamp(50*sc,28,160))
+                    -- Hitung box dari proyeksi kepala & kaki ke layar (akurat, ngikutin kamera)
+                    local topScreen,    _ = Camera:WorldToViewportPoint(hrp.Position + Vector3.new(0, 3.2, 0))
+                    local bottomScreen, _ = Camera:WorldToViewportPoint(hrp.Position + Vector3.new(0, -3.0, 0))
+                    local boxH = math.abs(topScreen.Y - bottomScreen.Y)
+                    local boxW = boxH * 0.55
+                    local sz   = Vector2.new(math.clamp(boxW, 10, 300), math.clamp(boxH, 14, 400))
                     local col = rainbow()
                     esp.box.Size = sz
-                    esp.box.Position = Vector2.new(pos.X - sz.X/2, pos.Y - sz.Y/2)
+                    esp.box.Position = Vector2.new(pos.X - sz.X/2, topScreen.Y)
                     esp.box.Color = col; esp.box.Visible = true
                     esp.tracer.From = Vector2.new(Camera.ViewportSize.X/2, Camera.ViewportSize.Y)
                     esp.tracer.To = Vector2.new(pos.X, pos.Y)
                     esp.tracer.Color = col; esp.tracer.Visible = true
                     esp.name.Text = p.Name
-                    esp.name.Position = Vector2.new(pos.X, pos.Y - sz.Y/2 - 15)
+                    esp.name.Position = Vector2.new(pos.X, topScreen.Y - 15)
                     esp.name.Color = col; esp.name.Visible = true
                     esp.distance.Text = math.floor(d).."m"
-                    esp.distance.Position = Vector2.new(pos.X, pos.Y + sz.Y/2 + 2)
+                    esp.distance.Position = Vector2.new(pos.X, bottomScreen.Y + 2)
                     esp.distance.Color = col; esp.distance.Visible = true
                     local hp = hum.Health / hum.MaxHealth
-                    local bX = pos.X - sz.X/2 - 6; local bY = pos.Y + 30
+                    local bX = pos.X - sz.X/2 - 6; local bY = bottomScreen.Y
                     esp.healthbar.From = Vector2.new(bX, bY)
-                    esp.healthbar.To = Vector2.new(bX, bY - 60*hp)
+                    esp.healthbar.To = Vector2.new(bX, bY - boxH*hp)
                     esp.healthbar.Color = Color3.fromRGB(math.floor((1-hp)*255), math.floor(hp*255), 0)
                     esp.healthbar.Visible = true
                 else
