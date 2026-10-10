@@ -8,9 +8,12 @@ local function init(page, THEME, tween, corner, stroke, mainGui)
     local player  = Players.LocalPlayer
 
     local islands = {
-        { name = "Enchanted Island", icon = "🌿", pos = Vector3.new(61,  765, -133) },
-        { name = "Astral Island",    icon = "🌌", pos = Vector3.new(241, 2020, 272)  },
-        { name = "Mystical Island",  icon = "✨", pos = Vector3.new(165, 4064, 33)   },
+        { name = "Enchanted Island", icon = "🌿", pos = Vector3.new(61,    765,    -133) },
+        { name = "Astral Island",    icon = "🌌", pos = Vector3.new(241,   2020,    272) },
+        { name = "Mystical Island",  icon = "✨", pos = Vector3.new(165,   4064,     33) },
+        { name = "Space Island",     icon = "🚀", pos = Vector3.new(143.7, 5657.1,  68.7) },
+        { name = "Tundra Island",    icon = "❄️", pos = Vector3.new(144.2, 9290.7,  76.1) },
+        { name = "Eternal Island",   icon = "🌟", pos = Vector3.new(136.7, 13700.7, 63.8) },
     }
 
     -- Section label
@@ -25,7 +28,6 @@ local function init(page, THEME, tween, corner, stroke, mainGui)
     sec.Parent = page
 
     for _, island in ipairs(islands) do
-        -- Pakai TextButton bukan Frame agar Activated work
         local btn = Instance.new("Frame")
         btn.Size = UDim2.new(1, 0, 0, 48)
         btn.BackgroundColor3 = THEME.BG_CARD
